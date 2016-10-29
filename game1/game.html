@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Masternode Game 1</title>
+
+	<script type="text/javascript" src="../js/phaser.min.js"></script>
+	<script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../js/log4javascript.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../js/chatbox.js"></script>
+
+    <link type="text/css" href="../css/jquery-ui.min.css" rel="stylesheet" />
+    <link type="text/css" href="../css/chatbox.css" rel="stylesheet" />
+    <link type="text/css" href="../css/game.css" rel="stylesheet" />
+</head>
+<body>
+
+<script src="utilities.js"></script>
+<script src="net/networkqueue.js"></script>
+<script src="net/networkhandler.js"></script>
+<script src="net/network.js"></script>
+<script src="player/CooldownIndicator.js"></script>
+<script src="player/Walker.js"></script>
+<script src="player/PlayerState.js"></script>
+<script src="player/playerInput.js"></script>
+<script src="player/networkInput.js"></script>
+<script src="player/player.js"></script>
+<script src="player/Enemy.js"></script>
+<script src="player/Zombie.js"></script>
+<script src="player/ZombieGroup.js"></script>
+<script src="player/ZombieState.js"></script>
+<script src="player/PlayerBot.js"></script>
+<script src="game.js"></script>
+<script src="effects/blood.js"></script>
+<script src="effects/death.js"></script>
+<script src="effects/gameeffects.js"></script>
+<script src="weapons/bulletWeapon.js"></script>
+<script src="weapons/bulletAmmo.js"></script>
+<script src="weapons/barrierWeapon.js"></script>
+<script src="weapons/barrierAmmo.js"></script>
+<script src="weapons/grenadeWeapon.js"></script>
+<script src="weapons/grenadeAmmo.js"></script>
+<script src="buffs/movementSpeedBuff.js"></script>
+<script src="buffs/attackSpeedBuff.js"></script>
+<script src="buffs/invisibilityBuff.js"></script>
+<script src="buffs/shieldBuff.js"></script>
+<script src="chamber/gamehud.js"></script>
+<script src="powerup/powerup.js"></script>
+<script src="powerup/powerupgroup.js"></script>
+<script src="chamber/chamber.js"></script>
+
+<div id="menuStateHtmlCanvas">
+	<input id="playerNameInput" type="text" size="20" value="Anon"></input>
+</div>
+
+
+<script type="text/javascript">
+    box = null;
+    $(document).ready(function(){
+        box = $("#chat_div").chatbox({id:"chat_div",
+            user:{key : "value"},
+            title : "chamber #X",
+            width: 185,
+            hidden: localStorage.chatBoxState == 0 ? true : false,
+            messageSent: function(id, user, msg) {
+                networkSocket.sendChatMessage(msg);
+            },
+            boxClosed: function(id) {
+                localStorage.chatboxState = 0;
+            }
+
+        });
+        $(".ui-chatbox-log ").height(200);
+
+
+        $('#phaser-game').mouseout(function(event) {
+            inputControls.mouseLeaveHandler();
+        });
+        $('#phaser-game').mouseenter(function(event) {
+            inputControls.mouseEnterHandler();
+        });
+
+        if (localStorage.chatboxState == 0) {
+            //box.chatbox("option", "boxManager").toggleBox();
+        } else if (localStorage.chatboxState == 1) {
+        } else {
+            // Init
+            localStorage.chatboxState = 1;
+        }
+    });
+
+    // set box state
+    function chatboxToggle() {
+        if (localStorage.chatboxState == 0) {
+            localStorage.chatboxState = 1;
+        } else {
+            localStorage.chatboxState = 0;
+        }
+        box.chatbox("option", "boxManager").toggleBox();
+    }
+
+    function handleNetworkChatMessage(message, userName) {
+        $("#chat_div").chatbox("option", "boxManager").addMsg(userName, message);
+    }
+</script>
+
+<div id="phaser-game"></div>
+
+<div id="chat_div">
+</div>
+
+<script>
+
+</script>
+
+
+</body>
+</html>
